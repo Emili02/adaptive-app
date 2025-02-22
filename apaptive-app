@@ -1,0 +1,76 @@
+class OnboardingApp {
+    constructor() {
+        this.employees = [];
+    }
+
+    addEmployee(employee) {
+        this.employees.push(employee);
+        this.createEmployeeAccount(employee);
+    }
+
+    createEmployeeAccount(employee) {
+        // Создание личного кабинета сотрудника с необходимыми курсами
+        employee.account = {
+            login: this.generateLogin(employee),
+            password: this.generatePassword(),
+            courses: this.assignCourses(employee),
+            progress: 0
+        };
+    }
+
+    generateLogin(employee) {
+        // Генерация логина для сотрудника
+        return `${employee.firstName}.${employee.lastName}`.toLowerCase();
+    }
+
+    generatePassword() {
+        // Генерация пароля для сотрудника
+        return Math.random().toString(36).slice(-8);
+    }
+
+    assignCourses(employee) {
+        // Назначение курсов в зависимости от уровня знаний и степени овз
+        let courses = ['О компании', 'Порядки'];
+        if (employee.ovz) {
+            courses.push('ВР тренировки');
+        }
+        return courses;
+    }
+
+    trackProgress(employee, course, progress) {
+        // Отслеживание прогресса сотрудника
+        employee.account.progress += progress;
+        if (employee.account.progress >= 95) {
+            this.allowToWork(employee);
+        }
+    }
+
+    allowToWork(employee) {
+        // Допуск сотрудника к работе
+        employee.allowedToWork = true;
+    }
+
+    completeOnboarding(employee) {
+        // Завершение онбординга
+        if (employee.allowedToWork) {
+            console.log(`${employee.firstName} ${employee.lastName} завершил онбординг и приступил к работе.`);
+        }
+    }
+}
+
+class Employee {
+    constructor(firstName, lastName, ovz) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.ovz = ovz;
+        this.allowedToWork = false;
+    }
+}
+
+// Пример использования
+const onboardingApp = new OnboardingApp();
+const employee = new Employee('Иван', 'Иванов', true);
+onboardingApp.addEmployee(employee);
+onboardingApp.trackProgress(employee, 'О компании', 50);
+onboardingApp.trackProgress(employee, 'Порядки', 50);
+onboardingApp.completeOnboarding(employee);
